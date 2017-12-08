@@ -11,6 +11,8 @@ tf.app.flags.DEFINE_string("test_dir", "data/test",
         "The directory to save the test files")
 tf.app.flags.DEFINE_integer("k", 20,
         "Percent of train files to become test files")
+tf.app.flags.DEFINE_boolean("do_move", False,
+	"Actually move the files via `os.rename`")
 
 def get_filenames(dir):
     fn_arr = []
@@ -30,8 +32,9 @@ def rename_files(arr, dir):
     for filename in arr:
         current = os.path.join(os.path.join(FLAGS.train_dir, dir), filename)
         new = os.path.join(os.path.join(FLAGS.test_dir, dir), filename)
-        os.rename(current, new)
-        bar.next()
+        if FLAGS.do_move:
+	    os.rename(current, new)
+	bar.next()
     bar.finish()
 
 bee_train_filenames = get_filenames(os.path.join(FLAGS.train_dir, "bee"))
